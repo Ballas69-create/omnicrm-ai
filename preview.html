@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniCRM AI - The CRM That Thinks For You</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#111827;line-height:1.6}
+a{text-decoration:none;color:inherit}
+.nav{position:fixed;top:0;width:100%;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid #f3f4f6;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800}
+.nav-logo .icon{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+.nav-logo b span{color:#2563eb}
+.nav-links{display:flex;gap:28px;font-size:14px;font-weight:600;color:#4b5563}
+.nav-links a:hover{color:#111827}
+.btn-primary{display:inline-block;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,#2563eb,#1d4ed8);box-shadow:0 4px 12px rgba(37,99,235,.25);transition:all .2s}
+.btn-primary:hover{box-shadow:0 8px 20px rgba(37,99,235,.35);transform:translateY(-1px)}
+.btn-ghost{padding:8px 16px;border-radius:12px;font-size:14px;font-weight:600;color:#374151}
+.btn-ghost:hover{background:#f3f4f6}
+.hero{position:relative;padding:140px 24px 80px;text-align:center;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-400px;left:50%;transform:translateX(-50%);width:1600px;height:800px;border-radius:50%;background:linear-gradient(to bottom,rgba(219,234,254,.8),rgba(237,233,254,.3),transparent);filter:blur(80px);pointer-events:none}
+.hero-content{position:relative;max-width:800px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid #bfdbfe;background:rgba(239,246,255,.8);color:#1d4ed8;font-size:14px;font-weight:600;margin-bottom:32px}
+h1{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:24px}
+.grad{background:linear-gradient(135deg,#2563eb,#7c3aed,#9333ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:20px;color:#4b5563;max-width:640px;margin:0 auto 40px}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-lg{padding:16px 32px;border-radius:16px;font-size:18px;font-weight:700}
+.btn-outline{display:inline-block;border:2px solid #e5e7eb;background:#fff;color:#374151;padding:16px 32px;border-radius:16px;font-size:18px;font-weight:700}
+.btn-outline:hover{border-color:#d1d5db;background:#f9fafb}
+.trust{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;margin-top:48px;font-size:14px;color:#9ca3af}
+.trust span{display:flex;align-items:center;gap:6px}
+.chk{color:#10b981;font-weight:bold}
+.preview-wrap{max-width:1000px;margin:-20px auto 0;padding:0 24px;position:relative;z-index:1}
+.preview{border:1px solid #e5e7eb;border-radius:24px;background:#fff;box-shadow:0 25px 60px rgba(0,0,0,.12);overflow:hidden}
+.preview-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #f3f4f6}
+.dot{width:12px;height:12px;border-radius:50%}
+.preview-url{flex:1;text-align:center;font-size:12px;color:#9ca3af;background:#f3f4f6;padding:4px 16px;border-radius:8px}
+.preview-body{padding:24px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.stat-card{border:1px solid #f3f4f6;border-radius:12px;padding:16px}
+.stat-card .label{font-size:12px;color:#6b7280}
+.stat-card .value{font-size:24px;font-weight:800;margin:4px 0}
+.stat-card .change{font-size:12px;font-weight:600;color:#059669}
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.chart-box{border:1px solid #f3f4f6;border-radius:12px;padding:16px}
+.chart-box h4{font-size:14px;font-weight:700;margin-bottom:12px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:100px}
+.bar{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(to top,#3b82f6,#60a5fa)}
+.pi{margin-bottom:12px}
+.pi .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.track{height:8px;border-radius:4px;background:#f3f4f6}
+.fill{height:8px;border-radius:4px;background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
+section{padding:96px 24px}
+.container{max-width:1200px;margin:0 auto}
+.center{text-align:center}
+.label-badge{display:inline-block;padding:6px 16px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:16px}
+.label-blue{background:#dbeafe;color:#1d4ed8}
+.label-purple{background:#ede9fe;color:#6d28d9}
+.label-green{background:#d1fae5;color:#047857}
+.label-amber{background:#fef3c7;color:#b45309}
+.label-violet{background:#ede9fe;color:#6d28d9}
+.label-gray{background:#e5e7eb;color:#374151}
+.label-ai{background:rgba(255,255,255,.1);color:#93c5fd}
+h2{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-.02em;margin-bottom:12px}
+.desc{font-size:20px;color:#6b7280;max-width:640px;margin-bottom:48px}
+.desc.center{margin-left:auto;margin-right:auto}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.feat-card{border:1px solid #e5e7eb;border-radius:24px;padding:32px;background:#fff;transition:all .3s}
+.feat-card:hover{box-shadow:0 20px 50px rgba(0,0,0,.08);transform:translateY(-4px)}
+.feat-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;margin-bottom:20px}
+.feat-card h3{font-size:20px;font-weight:800;margin-bottom:8px}
+.feat-card p{color:#6b7280;font-size:15px;line-height:1.7}
+.feat-stat{display:inline-block;margin-top:16px;padding:4px 12px;border-radius:8px;background:#f3f4f6;font-size:12px;font-weight:700;color:#374151}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.mod-card{border:1px solid #e5e7eb;border-radius:16px;padding:24px;background:#fff;transition:all .3s}
+.mod-card:hover{box-shadow:0 12px 30px rgba(0,0,0,.06);transform:translateY(-4px)}
+.mod-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;margin-bottom:12px}
+.mod-card h4{font-weight:800;margin-bottom:4px}
+.mod-card p{font-size:14px;color:#6b7280}
+.ai-section{background:linear-gradient(135deg,#0f172a,#1e1b4b,#1e3a5f);color:#fff;position:relative;overflow:hidden}
+.ai-section::before{content:'';position:absolute;top:80px;left:80px;width:280px;height:280px;border-radius:50%;background:#3b82f6;filter:blur(100px);opacity:.1}
+.ai-section::after{content:'';position:absolute;bottom:80px;right:80px;width:360px;height:360px;border-radius:50%;background:#8b5cf6;filter:blur(120px);opacity:.1}
+.ai-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;position:relative;z-index:1}
+.ai-card{border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px;background:rgba(255,255,255,.05);backdrop-filter:blur(8px);transition:all .3s}
+.ai-card:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.ai-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;margin-bottom:16px}
+.ai-card h4{font-weight:700;margin-bottom:6px}
+.ai-card p{font-size:14px;color:rgba(147,197,253,.7)}
+.ind-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.ind-tag{display:flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.ind-tag:hover{box-shadow:0 4px 12px rgba(0,0,0,.06);transform:translateY(-2px)}
+.test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.test-card{border:1px solid #e5e7eb;border-radius:20px;padding:24px;background:#fff;transition:all .3s}
+.test-card:hover{box-shadow:0 16px 40px rgba(0,0,0,.08);transform:translateY(-4px)}
+.stars{color:#fbbf24;margin-bottom:16px;font-size:14px;letter-spacing:2px}
+.test-card blockquote{font-size:15px;color:#374151;line-height:1.7;margin-bottom:20px}
+.test-author{display:flex;align-items:center;gap:12px}
+.test-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.test-name{font-size:14px;font-weight:700}
+.test-role{font-size:12px;color:#6b7280}
+.test-metric{display:inline-block;margin-top:12px;padding:4px 10px;border-radius:8px;background:#d1fae5;font-size:11px;font-weight:700;color:#047857}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:900px;margin:0 auto}
+.dl-card{border:1px solid #e5e7eb;border-radius:20px;padding:28px;text-align:center;background:#fff;transition:all .3s}
+.dl-card:hover{box-shadow:0 16px 40px rgba(0,0,0,.08);transform:translateY(-4px);border-color:#bfdbfe}
+.dl-icon{font-size:48px;margin-bottom:12px}
+.dl-card h4{font-weight:800;margin-bottom:4px}
+.dl-meta{font-size:12px;color:#9ca3af;margin-bottom:4px}
+.dl-chip{font-size:12px;color:#6b7280;margin-bottom:16px}
+.dl-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,#2563eb,#1d4ed8);box-shadow:0 4px 12px rgba(37,99,235,.25);border:none;cursor:pointer}
+.dl-btn:hover{box-shadow:0 8px 20px rgba(37,99,235,.35)}
+.req-box{max-width:800px;margin:48px auto 0;border:1px solid #e5e7eb;border-radius:16px;background:#f9fafb;padding:24px}
+.req-box h4{font-weight:800;margin-bottom:12px}
+.req-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;font-size:14px;color:#4b5563}
+.req-grid strong{display:block;color:#1f2937;margin-bottom:2px}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:1000px;margin:0 auto;align-items:start}
+.price-card{border:2px solid #e5e7eb;border-radius:24px;padding:32px;background:#fff;transition:all .3s}
+.price-card.popular{border-color:#3b82f6;box-shadow:0 20px 50px rgba(37,99,235,.12);position:relative}
+.popular-badge{position:absolute;top:-16px;left:50%;transform:translateX(-50%);padding:6px 16px;border-radius:999px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.price-card h3{font-size:20px;font-weight:800}
+.plan-desc{font-size:14px;color:#6b7280;margin-top:4px}
+.price-amount{margin:24px 0 0;font-size:48px;font-weight:900}
+.price-period{font-size:18px;color:#6b7280;font-weight:400}
+.price-features{list-style:none;margin:24px 0;padding:0}
+.price-features li{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;color:#374151}
+.check-mark{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#d1fae5;color:#059669;font-size:12px;font-weight:bold;flex-shrink:0}
+.price-btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:14px;font-weight:700;text-align:center;border:none;cursor:pointer;transition:all .2s}
+.price-btn.primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.25)}
+.price-btn.primary:hover{box-shadow:0 8px 20px rgba(37,99,235,.35)}
+.price-btn.secondary{border:2px solid #e5e7eb;background:#fff;color:#374151}
+.price-btn.secondary:hover{border-color:#d1d5db;background:#f9fafb}
+.faq-wrap{max-width:800px;margin:0 auto}
+.faq-item{border-bottom:1px solid #f3f4f6;cursor:pointer}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:20px 0;font-size:18px;font-weight:700;color:#111827}
+.faq-a{padding:0 0 20px;font-size:16px;color:#4b5563;line-height:1.7;display:none}
+.faq-item.open .faq-a{display:block}
+.cta-section{padding:96px 24px}
+.cta-box{max-width:1100px;margin:0 auto;border-radius:32px;background:linear-gradient(135deg,#2563eb,#7c3aed,#9333ea);padding:80px 48px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.1);filter:blur(80px)}
+.cta-box h2{font-size:clamp(2rem,4vw,3rem);font-weight:900;position:relative;z-index:1}
+.cta-box p{font-size:20px;color:rgba(191,219,254,.9);margin:16px auto 32px;max-width:480px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-white{display:inline-block;padding:16px 32px;border-radius:16px;font-size:18px;font-weight:700;background:#fff;color:#2563eb;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.btn-white:hover{background:#eff6ff;transform:translateY(-2px)}
+.btn-ghost-w{display:inline-block;padding:16px 32px;border-radius:16px;font-size:18px;font-weight:700;border:2px solid rgba(255,255,255,.3);color:#fff}
+.btn-ghost-w:hover{background:rgba(255,255,255,.1)}
+.footer{border-top:1px solid #e5e7eb;background:#f9fafb;padding:64px 24px}
+.footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:48px;max-width:1200px;margin:0 auto}
+.footer-brand p{margin-top:16px;color:#6b7280;font-size:14px;max-width:280px}
+.footer h5{font-weight:800;margin-bottom:16px}
+.footer ul{list-style:none;padding:0}
+.footer li{margin-bottom:10px}
+.footer li a{font-size:14px;color:#6b7280}
+.footer li a:hover{color:#111827}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:32px auto 0;padding-top:32px;border-top:1px solid #e5e7eb;font-size:14px;color:#9ca3af}
+.footer-bottom a{color:#9ca3af;margin-left:24px}
+@media(max-width:768px){.nav-links{display:none}.stat-grid{grid-template-columns:repeat(2,1fr)}.chart-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.price-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="nav-logo"><div class="icon">⚡</div><b>OmniCRM <span>AI</span></b></div>
+<div class="nav-links"><a href="#features">Features</a><a href="#industries">Industries</a><a href="#pricing">Pricing</a><a href="#download">Download</a></div>
+<div><a href="/login" class="btn-ghost">Sign In</a> <a href="/signup" class="btn-primary">Get Started</a></div>
+</nav>
+
+<section class="hero">
+<div class="hero-content">
+<div class="badge">✨ New: AI Workflow Builder just launched</div>
+<h1>The CRM That <span class="grad">Thinks For You</span></h1>
+<p>Stop wrestling with software. OmniCRM AI reads your business, builds your workflows, and runs your operations so you can focus on closing deals.</p>
+<div class="hero-btns">
+<a href="/signup" class="btn-primary btn-lg">Start Free — No Card Needed →</a>
+<a href="#features" class="btn-outline btn-lg">▶ See What It Does</a>
+</div>
+<div class="trust">
+<span><span class="chk">✓</span> 10,000+ businesses</span>
+<span><span class="chk">✓</span> 50+ industries</span>
+<span><span class="chk">✓</span> 99.99% uptime</span>
+<span><span class="chk">✓</span> SOC 2 certified</span>
+<span><span class="chk">✓</span> GDPR compliant</span>
+</div>
+</div>
+</section>
+
+<div class="preview-wrap">
+<div class="preview">
+<div class="preview-bar"><div class="dot" style="background:#f87171"></div><div class="dot" style="background:#fbbf24"></div><div class="dot" style="background:#34d399"></div><div class="preview-url">app.omnicrm.ai/dashboard</div></div>
+<div class="preview-body">
+<div class="stat-grid">
+<div class="stat-card"><div class="label">Revenue</div><div class="value">R12.4M</div><div class="change">+12.5%</div></div>
+<div class="stat-card"><div class="label">Leads</div><div class="value">2,847</div><div class="change">+8.2%</div></div>
+<div class="stat-card"><div class="label">Deals</div><div class="value">184</div><div class="change">+23.1%</div></div>
+<div class="stat-card"><div class="label">Customers</div><div class="value">1,234</div><div class="change">+5.7%</div></div>
+</div>
+<div class="chart-grid">
+<div class="chart-box"><h4>Revenue Trend</h4><div class="bars">
+<div class="bar" style="height:55%"></div><div class="bar" style="height:62%"></div><div class="bar" style="height:58%"></div><div class="bar" style="height:72%"></div>
+<div class="bar" style="height:78%"></div><div class="bar" style="height:85%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:92%"></div>
+<div class="bar" style="height:88%"></div><div class="bar" style="height:95%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:98%"></div>
+</div></div>
+<div class="chart-box"><h4>Pipeline</h4>
+<div class="pi"><div class="top"><span>Discovery</span><span>12</span></div><div class="track"><div class="fill" style="width:60%"></div></div></div>
+<div class="pi"><div class="top"><span>Proposal</span><span>6</span></div><div class="track"><div class="fill" style="width:30%"></div></div></div>
+<div class="pi"><div class="top"><span>Won</span><span>3</span></div><div class="track"><div class="fill" style="width:15%"></div></div></div>
+</div></div></div></div></div>
+
+<section id="features">
+<div class="container center" style="margin-bottom:80px">
+<span class="label-badge label-blue">Features</span>
+<h2>Built Different. Works Better.</h2>
+<p class="desc center">Six reasons your team will actually enjoy using this CRM.</p>
+</div>
+<div class="container">
+<div class="feat-grid">
+<div class="feat-card"><div class="feat-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">🤖</div><h3>Your AI Sidekick That Actually Gets Stuff Done</h3><p>Stop drowning in busywork. Our AI reads your leads, writes your emails, builds your quotes, and tells you which deals are about to close before you even ask.</p><span class="feat-stat">Saves 20+ hrs/week</span></div>
+<div class="feat-card"><div class="feat-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">✨</div><h3>Tell It What You Do. It Builds Itself.</h3><p>Pick your industry. OmniCRM wires up every module, form, workflow, and dashboard you need automatically. No consultants. No code. No kidding.</p><span class="feat-stat">Ready in 5 minutes</span></div>
+<div class="feat-card"><div class="feat-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6)">📊</div><h3>Numbers That Actually Mean Something</h3><p>Real-time dashboards that don't require a PhD. Revenue trends, pipeline health, team performance all at a glance with AI predictions baked in.</p><span class="feat-stat">50+ chart types</span></div>
+<div class="feat-card"><div class="feat-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)">⚡</div><h3>If This, Then That — On Steroids</h3><p>Drag-and-drop automation that handles the boring stuff. New lead? Auto-assign, send welcome email, create follow-up task. All before your coffee gets cold.</p><span class="feat-stat">Unlimited workflows</span></div>
+<div class="feat-card"><div class="feat-icon" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">👥</div><h3>Every Touch, Every Deal, Every Moment</h3><p>360-degree customer profiles that tell the full story. Emails, calls, deals, tickets, invoices all in one place so your team never drops the ball.</p><span class="feat-stat">Complete history</span></div>
+<div class="feat-card"><div class="feat-icon" style="background:linear-gradient(135deg,#475569,#374151)">🔒</div><h3>Fort Knox-Level Security</h3><p>SOC 2 compliant. Role-based permissions. SSO. Multi-tenant data isolation. Your data is yours. Period.</p><span class="feat-stat">99.99% uptime</span></div>
+</div></div></section>
+
+<section>
+<div class="container center" style="margin-bottom:80px">
+<span class="label-badge label-purple">Modules</span>
+<h2>12 Modules. One Platform.</h2>
+<p class="desc center">Everything from CRM to HR to Inventory fully integrated, fully AI-powered.</p>
+</div>
+<div class="container">
+<div class="mod-grid">
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">👥</div><h4>CRM & Leads</h4><p>Capture, score, and convert leads with AI-powered insights</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">🎯</div><h4>Sales Pipeline</h4><p>Visual kanban boards with drag-and-drop deal management</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)">📢</div><h4>Marketing</h4><p>Email, SMS, and WhatsApp campaigns with smart segmentation</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#f43f5e,#e11d48)">🎧</div><h4>Support & Tickets</h4><p>SLA tracking, live chat, and AI-powered ticket routing</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)">📁</div><h4>Project Management</h4><p>Tasks, milestones, Gantt charts, and resource planning</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#10b981,#059669)">💰</div><h4>Finance & Invoicing</h4><p>Quotes, invoices, expenses, purchase orders all connected</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#14b8a6,#0d9488)">💼</div><h4>HR & Teams</h4><p>Employees, leave, payroll, performance reviews, org charts</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#f97316,#ea580c)">📦</div><h4>Inventory</h4><p>Stock levels, suppliers, warehouses, reorder alerts</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">🤖</div><h4>AI Assistant</h4><p>Chat with your data. Create records. Generate reports. Just ask.</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">🔀</div><h4>Workflows</h4><p>Visual automation builder with triggers, conditions, actions</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#64748b,#475569)">📄</div><h4>Documents</h4><p>Contracts, templates, e-signatures, and document automation</p></div>
+<div class="mod-card"><div class="mod-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">📊</div><h4>Analytics & BI</h4><p>Custom dashboards, KPIs, forecasting, and AI insights</p></div>
+</div></div></section>
+
+<section class="ai-section">
+<div class="container center" style="margin-bottom:80px">
+<span class="label-badge label-ai">AI Engine</span>
+<h2 style="color:#fff">Intelligence That Moves the Needle</h2>
+<p class="desc center" style="color:rgba(147,197,253,.8)">Not gimmicks. Not buzzwords. Real AI that makes your team faster, smarter, and more profitable.</p>
+</div>
+<div class="container">
+<div class="ai-grid">
+<div class="ai-card"><div class="ai-icon">📈</div><h4>Predictive Sales</h4><p>AI predicts which deals will close, when, and for how much</p></div>
+<div class="ai-card"><div class="ai-icon">🎯</div><h4>Lead Scoring</h4><p>Automatically ranks leads by conversion probability</p></div>
+<div class="ai-card"><div class="ai-icon">⚠️</div><h4>Churn Prediction</h4><p>Spots at-risk customers before they leave</p></div>
+<div class="ai-card"><div class="ai-icon">💬</div><h4>Sentiment Analysis</h4><p>Reads the mood in emails, chats, and reviews</p></div>
+<div class="ai-card"><div class="ai-icon">🔄</div><h4>Next Best Action</h4><p>AI recommends what to do next for every deal</p></div>
+<div class="ai-card"><div class="ai-icon">📨</div><h4>Smart Compose</h4><p>Writes emails, quotes, and follow-ups in your voice</p></div>
+</div></div></section>
+
+<section id="industries">
+<div class="container center" style="margin-bottom:48px">
+<span class="label-badge label-green">Industries</span>
+<h2>Your Industry. Your CRM.</h2>
+<p class="desc center">30+ pre-built templates. Pick yours, and we handle the rest.</p>
+</div>
+<div class="container">
+<div class="ind-grid">
+<div class="ind-tag"><span>🏗️</span>Construction</div><div class="ind-tag"><span>🚛</span>Logistics</div><div class="ind-tag"><span>🏭</span>Manufacturing</div>
+<div class="ind-tag"><span>🛍️</span>Retail</div><div class="ind-tag"><span>🛒</span>E-Commerce</div><div class="ind-tag"><span>🏠</span>Real Estate</div>
+<div class="ind-tag"><span>🏥</span>Healthcare</div><div class="ind-tag"><span>🏨</span>Hospitality</div><div class="ind-tag"><span>🎓</span>Education</div>
+<div class="ind-tag"><span>⚖️</span>Legal</div><div class="ind-tag"><span>📊</span>Accounting</div><div class="ind-tag"><span>🛡️</span>Insurance</div>
+<div class="ind-tag"><span>🚗</span>Automotive</div><div class="ind-tag"><span>👥</span>Recruitment</div><div class="ind-tag"><span>📢</span>Marketing</div>
+<div class="ind-tag"><span>💻</span>IT Services</div><div class="ind-tag"><span>🏛️</span>Government</div><div class="ind-tag"><span>📡</span>Telecom</div>
+<div class="ind-tag"><span>⚡</span>Energy</div><div class="ind-tag"><span>⚒️</span>Mining</div><div class="ind-tag"><span>🌾</span>Agriculture</div>
+<div class="ind-tag"><span>✈️</span>Aviation</div><div class="ind-tag"><span>🔐</span>Security</div><div class="ind-tag"><span>🏢</span>Property</div>
+<div class="ind-tag"><span>🩺</span>Medical</div><div class="ind-tag"><span>🍽️</span>Restaurants</div><div class="ind-tag"><span>🏪</span>Franchises</div>
+<div class="ind-tag"><span>📞</span>Call Centers</div><div class="ind-tag"><span>💼</span>Services</div>
+<div class="ind-tag" style="border-style:dashed;color:#9ca3af"><span>✨</span>+ Custom AI</div>
+</div></div></section>
+
+<section>
+<div class="container center" style="margin-bottom:48px">
+<span class="label-badge label-amber">Testimonials</span>
+<h2>Teams Ship Faster With OmniCRM</h2>
+</div>
+<div class="container">
+<div class="test-grid">
+<div class="test-card"><div class="stars">★★★★★</div><blockquote>"We replaced 4 different tools with OmniCRM. The AI assistant alone saves our team 20 hours a week. Not even close."</blockquote><div class="test-author"><div class="test-avatar">SC</div><div><div class="test-name">Sarah Chen</div><div class="test-role">CEO, TechStart</div></div></div><div class="test-metric">3x faster sales cycle</div></div>
+<div class="test-card"><div class="stars">★★★★★</div><blockquote>"We deployed the logistics module on a Monday. By Tuesday, fleet tracking, route planning, and driver management were all live. Unreal."</blockquote><div class="test-author"><div class="test-avatar">MR</div><div><div class="test-name">Marcus Rivera</div><div class="test-role">Ops Director, FastTrack</div></div></div><div class="test-metric">40% fewer delays</div></div>
+<div class="test-card"><div class="stars">★★★★★</div><blockquote>"Patient scheduling, medical records, billing — everything just works. Staff stopped complaining about software for the first time ever."</blockquote><div class="test-author"><div class="test-avatar">PP</div><div><div class="test-name">Dr. Priya Patel</div><div class="test-role">Practice Manager, HealthFirst</div></div></div><div class="test-metric">98% satisfaction</div></div>
+<div class="test-card"><div class="stars">★★★★★</div><blockquote>"BOQs, progress claims, site management — it handles our entire construction workflow. No idea how we ran projects before this."</blockquote><div class="test-author"><div class="test-avatar">JO</div><div><div class="test-name">James O'Brien</div><div class="test-role">Founder, BuildRight</div></div></div><div class="test-metric">25% under budget</div></div>
+</div></div></section>
+
+<section id="download">
+<div class="container center" style="margin-bottom:48px">
+<span class="label-badge label-blue">Download</span>
+<h2>Take It Everywhere</h2>
+<p class="desc center">Native desktop apps with offline mode. Plus web and mobile — covered on every screen.</p>
+</div>
+<div class="container">
+<div class="dl-grid">
+<div class="dl-card"><div class="dl-icon">🍎</div><h4>macOS</h4><div class="dl-meta">v3.2.1 • 89 MB</div><div class="dl-chip">Apple Silicon & Intel</div><button class="dl-btn">⬇ Download</button></div>
+<div class="dl-card"><div class="dl-icon">🧯</div><h4>Windows</h4><div class="dl-meta">v3.2.1 • 94 MB</div><div class="dl-chip">Windows 10/11</div><button class="dl-btn">⬇ Download</button></div>
+<div class="dl-card"><div class="dl-icon">🐧</div><h4>Linux</h4><div class="dl-meta">v3.2.1 • 82 MB</div><div class="dl-chip">Ubuntu / Debian / Fedora</div><button class="dl-btn">⬇ Download</button></div>
+<div class="dl-card"><div class="dl-icon">🌐</div><h4>Web App</h4><div class="dl-meta">Always latest</div><div class="dl-chip">Any modern browser</div><a href="/dashboard" class="dl-btn">Open Web App →</a></div>
+</div>
+<div class="req-box"><h4>System Requirements</h4><div class="req-grid"><div><strong>Processor</strong>Intel i3 / Apple M1 or better</div><div><strong>Memory</strong>4 GB RAM minimum, 8 GB recommended</div><div><strong>Storage</strong>500 MB available space</div></div></div>
+</div></section>
+
+<section id="pricing">
+<div class="container center" style="margin-bottom:48px">
+<span class="label-badge label-violet">Pricing</span>
+<h2>Simple. Transparent. Fair.</h2>
+<p class="desc center">Start free. Upgrade when you're ready. No surprises, no gotchas.</p>
+</div>
+<div class="container">
+<div class="price-grid">
+<div class="price-card">
+<h3>Starter</h3><div class="plan-desc">For solo operators getting started</div>
+<div class="price-amount">R0 <span class="price-period">forever</span></div>
+<ul class="price-features"><li><span class="check-mark">✓</span> Up to 3 users</li><li><span class="check-mark">✓</span> 5,000 contacts</li><li><span class="check-mark">✓</span> Basic CRM</li><li><span class="check-mark">✓</span> Email support</li><li><span class="check-mark">✓</span> 1 GB storage</li></ul>
+<button class="price-btn secondary">Start Free</button>
+</div>
+<div class="price-card popular">
+<div class="popular-badge">Most Popular</div>
+<h3>Professional</h3><div class="plan-desc">For growing teams that mean business</div>
+<div class="price-amount">R199 <span class="price-period">/user/mo</span></div>
+<ul class="price-features"><li><span class="check-mark">✓</span> Unlimited users</li><li><span class="check-mark">✓</span> 500,000 contacts</li><li><span class="check-mark">✓</span> All modules</li><li><span class="check-mark">✓</span> AI Assistant</li><li><span class="check-mark">✓</span> Workflows</li><li><span class="check-mark">✓</span> Priority support</li><li><span class="check-mark">✓</span> 200 GB storage</li><li><span class="check-mark">✓</span> Custom branding</li></ul>
+<button class="price-btn primary">Start Free Trial</button>
+</div>
+<div class="price-card">
+<h3>Enterprise</h3><div class="plan-desc">For organizations that need it all</div>
+<div class="price-amount">R499 <span class="price-period">/user/mo</span></div>
+<ul class="price-features"><li><span class="check-mark">✓</span> Everything in Pro</li><li><span class="check-mark">✓</span> Unlimited contacts</li><li><span class="check-mark">✓</span> White label</li><li><span class="check-mark">✓</span> Custom domain</li><li><span class="check-mark">✓</span> SSO/SAML</li><li><span class="check-mark">✓</span> Dedicated support</li><li><span class="check-mark">✓</span> Unlimited storage</li><li><span class="check-mark">✓</span> API access</li><li><span class="check-mark">✓</span> SLA guarantee</li></ul>
+<button class="price-btn secondary">Contact Sales</button>
+</div>
+</div></div></section>
+
+<section id="faq">
+<div class="container center" style="margin-bottom:48px">
+<span class="label-badge label-gray">FAQ</span>
+<h2>Questions? Answered.</h2>
+</div>
+<div class="container">
+<div class="faq-wrap">
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">How fast can I get up and running? ▼</div><div class="faq-a">Most teams are live within 5 minutes. Tell us your industry, and we auto-configure everything — modules, workflows, dashboards, the works. No coding, no consultants, no 6-month implementations.</div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I switch from Salesforce, HubSpot, or Zoho? ▼</div><div class="faq-a">Absolutely. We have one-click import tools for all major CRMs. Your contacts, deals, history, and custom fields come over cleanly. Most migrations take under an hour.</div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is my data actually secure? ▼</div><div class="faq-a">SOC 2 Type II certified. Your data is encrypted at rest and in transit. Multi-tenant isolation means other companies can never see your stuff. Regular penetration testing. 99.99% uptime track record.</div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">What if my industry isn't listed? ▼</div><div class="faq-a">Pick Custom Industry during onboarding. Our AI analyzes your business and generates a tailored configuration from scratch. It learns your terminology, your processes, your KPIs.</div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I use it offline? ▼</div><div class="faq-a">The desktop apps (Mac, Windows, Linux) have full offline mode. Work without internet, and everything syncs automatically when you're back online.</div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is there an API? ▼</div><div class="faq-a">Full REST and GraphQL API on Professional and Enterprise plans. Webhooks, real-time events, and SDKs for JavaScript, Python, Ruby, and PHP.</div></div>
+</div></div></section>
+
+<div class="cta-section">
+<div class="cta-box">
+<h2>Your Competitors Are Already Using This.</h2>
+<p>10,000+ businesses. 50+ industries. One decision to make.</p>
+<div class="cta-btns">
+<a href="/signup" class="btn-white">Start Free Now →</a>
+<a href="#download" class="btn-ghost-w">⬇ Download App</a>
+</div>
+</div></div>
+
+<footer class="footer">
+<div class="footer-grid">
+<div class="footer-brand"><div class="nav-logo"><div class="icon">⚡</div><b>OmniCRM <span>AI</span></b></div><p>The AI-powered CRM that adapts to any business, any industry, any size.</p></div>
+<div><h5>Product</h5><ul><li><a href="#">Features</a></li><li><a href="#">Pricing</a></li><li><a href="#">Integrations</a></li><li><a href="#">API</a></li><li><a href="#">Changelog</a></li></ul></div>
+<div><h5>Company</h5><ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Partners</a></li></ul></div>
+<div><h5>Support</h5><ul><li><a href="#">Help Center</a></li><li><a href="#">Documentation</a></li><li><a href="#">Status</a></li><li><a href="#">Security</a></li><li><a href="#">Contact</a></li></ul></div>
+</div>
+<div class="footer-bottom"><span>© 2024 OmniCRM AI. All rights reserved.</span><div><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div></div>
+</footer>
+</body>
+</html>

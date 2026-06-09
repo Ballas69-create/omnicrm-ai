@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniCRM AI - Product Demo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#fff;overflow:hidden;height:100vh}
+.slide{display:none;height:100vh;width:100vw;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.slide.active{display:flex}
+.slide::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;filter:blur(120px);opacity:.15;pointer-events:none}
+.s1::before{background:#3b82f6}.s2::before{background:#8b5cf6}.s3::before{background:#10b981}.s4::before{background:#f59e0b}.s5::before{background:#ec4899}.s6::before{background:#06b6d4}.s7::before{background:#f43f5e}.s8::before{background:#8b5cf6}.s9::before{background:#3b82f6}.s10::before{background:#10b981}
+h1{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px;position:relative;z-index:1}
+h1 .g{background:linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:clamp(1.5rem,3vw,2.5rem);font-weight:800;margin-bottom:16px;position:relative;z-index:1}
+p{font-size:clamp(1rem,1.5vw,1.25rem);color:#94a3b8;max-width:700px;line-height:1.7;position:relative;z-index:1}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:20px;position:relative;z-index:1}
+.tag-blue{background:rgba(59,130,246,.2);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+.tag-green{background:rgba(16,185,129,.2);color:#34d399;border:1px solid rgba(16,185,129,.3)}
+.tag-purple{background:rgba(139,92,246,.2);color:#a78bfa;border:1px solid rgba(139,92,246,.3)}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:32px;position:relative;z-index:1}
+.feat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;backdrop-filter:blur(8px)}
+.feat h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.feat p{font-size:13px;color:#94a3b8;margin:0}
+.feat .icon{font-size:28px;margin-bottom:8px}
+.stats{display:flex;gap:40px;margin-top:32px;position:relative;z-index:1}
+.stat{text-align:center}
+.stat .num{font-size:clamp(2rem,4vw,3.5rem);font-weight:900;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{font-size:14px;color:#64748b;margin-top:4px}
+.mockup{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px;margin-top:32px;position:relative;z-index:1;max-width:900px}
+.mockup-bar{display:flex;gap:6px;margin-bottom:16px}
+.mockup-bar span{width:10px;height:10px;border-radius:50%}
+.mockup-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.mockup-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px}
+.mockup-card .l{font-size:11px;color:#64748b}.mockup-card .v{font-size:20px;font-weight:800;margin:4px 0}.mockup-card .c{font-size:11px;color:#34d399;font-weight:600}
+.nav{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;z-index:10;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 20px;backdrop-filter:blur(12px)}
+.nav button{background:none;border:none;color:#fff;cursor:pointer;padding:8px;border-radius:50%;transition:background .2s}
+.nav button:hover{background:rgba(255,255,255,.1)}
+.nav button:disabled{opacity:.3;cursor:default}
+.dots{display:flex;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .2s}
+.dot.active{background:#3b82f6;width:24px;border-radius:4px}
+.counter{position:fixed;top:30px;right:40px;font-size:14px;color:#64748b;z-index:10}
+.play-btn{position:fixed;top:30px;left:40px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;z-index:10;transition:all .2s}
+.play-btn:hover{background:rgba(255,255,255,.1)}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:14px;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 8px 24px rgba(37,99,235,.3);text-decoration:none;margin-top:24px;position:relative;z-index:1;transition:all .2s}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,92,235,.4)}
+.bars{display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:16px}
+.bar{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(to top,#3b82f6,#60a5fa)}
+@media(max-width:768px){.slide{padding:40px 24px}.features{grid-template-columns:1fr 1fr}.stats{flex-wrap:wrap;gap:20px}.mockup-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<button class="play-btn" onclick="toggleAuto()" id="playBtn">▶ Auto Play</button>
+<div class="counter" id="counter">1 / 10</div>
+
+<!-- Slide 1: Intro -->
+<div class="slide s1 active" id="s1">
+<div class="tag tag-blue">✨ Product Demo — OmniCRM AI</div>
+<h1>The CRM That<br><span class="g">Thinks For You</span></h1>
+<p>One platform that adapts to any business, any industry. AI-powered automation that saves 20+ hours per week.</p>
+<div class="stats">
+<div class="stat"><div class="num">10K+</div><div class="lbl">Businesses</div></div>
+<div class="stat"><div class="num">50+</div><div class="lbl">Industries</div></div>
+<div class="stat"><div class="num">99.9%</div><div class="lbl">Uptime</div></div>
+<div class="stat"><div class="num">4.9/5</div><div class="lbl">Rating</div></div>
+</div>
+</div>
+
+<!-- Slide 2: Problem -->
+<div class="slide s2" id="s2">
+<div class="tag tag-purple">😤 The Problem</div>
+<h2>Your team is drowning in tools.</h2>
+<p>Spreadsheets for leads. Email for follow-ups. Another app for invoices. A separate tool for projects. Nothing talks to each other. Data is scattered. Opportunities are missed.</p>
+<div class="features">
+<div class="feat"><div class="icon">📊</div><h4>Scattered Data</h4><p>Customer info in 5 different places</p></div>
+<div class="feat"><div class="icon">⏰</div><h4>Manual Work</h4><p>20+ hours/week on repetitive tasks</p></div>
+<div class="feat"><div class="icon">📉</div><h4>Lost Deals</h4><p>No visibility into your pipeline</p></div>
+<div class="feat"><div class="icon">🤯</div><h4>Tool Fatigue</h4><p>Switching between 6+ apps daily</p></div>
+</div>
+</div>
+
+<!-- Slide 3: Solution -->
+<div class="slide s3" id="s3">
+<div class="tag tag-green">💡 The Solution</div>
+<h2>One platform. Everything included.</h2>
+<p>OmniCRM AI replaces your CRM, project manager, invoicing tool, support desk, HR system, and analytics platform — with one intelligent platform that configures itself.</p>
+<div class="features">
+<div class="feat"><div class="icon">👥</div><h4>CRM & Sales</h4><p>Leads, pipeline, quotes, orders</p></div>
+<div class="feat"><div class="icon">📁</div><h4>Projects</h4><p>Tasks, milestones, Gantt charts</p></div>
+<div class="feat"><div class="icon">💰</div><h4>Finance</h4><p>Invoices, expenses, POs</p></div>
+<div class="feat"><div class="icon">🎧</div><h4>Support</h4><p>Tickets, live chat, SLAs</p></div>
+<div class="feat"><div class="icon">💼</div><h4>HR</h4><p>Employees, leave, payroll</p></div>
+<div class="feat"><div class="icon">📦</div><h4>Inventory</h4><p>Stock, suppliers, warehouses</p></div>
+</div>
+</div>
+
+<!-- Slide 4: AI Engine -->
+<div class="slide s4" id="s4">
+<div class="tag tag-purple">🤖 AI Engine</div>
+<h2>Intelligence that moves the needle.</h2>
+<p>Not gimmicks. Real AI that predicts deals, scores leads, writes emails, and tells you what to do next.</p>
+<div class="features">
+<div class="feat"><div class="icon">📈</div><h4>Predictive Sales</h4><p>Which deals will close and when</p></div>
+<div class="feat"><div class="icon">🎯</div><h4>Lead Scoring</h4><p>Auto-ranks by conversion probability</p></div>
+<div class="feat"><div class="icon">⚠️</div><h4>Churn Prediction</h4><p>Spots at-risk customers early</p></div>
+<div class="feat"><div class="icon">💬</div><h4>AI Assistant</h4><p>Chat to create records, generate reports</p></div>
+</div>
+</div>
+
+<!-- Slide 5: Onboarding -->
+<div class="slide s5" id="s5">
+<div class="tag tag-blue">🚀 Onboarding</div>
+<h2>Live in 5 minutes. Not 5 months.</h2>
+<p>Tell us your industry. Our AI builds your perfect CRM — modules, workflows, dashboards, forms, reports — automatically.</p>
+<div class="features">
+<div class="feat"><div class="icon">1️⃣</div><h4>Company Info</h4><p>Name, size, industry</p></div>
+<div class="feat"><div class="icon">2️⃣</div><h4>AI Configures</h4><p>Modules, workflows, dashboards</p></div>
+<div class="feat"><div class="icon">3️⃣</div><h4>Start Working</h4><p>Everything ready to go</p></div>
+</div>
+</div>
+
+<!-- Slide 6: Dashboard -->
+<div class="slide s6" id="s6">
+<div class="tag tag-green">📊 Dashboard</div>
+<h2>Everything at a glance.</h2>
+<p>Real-time revenue, pipeline health, team performance, and AI insights — all on one screen.</p>
+<div class="mockup">
+<div class="mockup-bar"><span style="background:#f87171"></span><span style="background:#fbbf24"></span><span style="background:#34d399"></span></div>
+<div class="mockup-grid">
+<div class="mockup-card"><div class="l">Revenue</div><div class="v">R12.4M</div><div class="c">+12.5%</div></div>
+<div class="mockup-card"><div class="l">Leads</div><div class="v">2,847</div><div class="c">+8.2%</div></div>
+<div class="mockup-card"><div class="l">Deals</div><div class="v">184</div><div class="c">+23.1%</div></div>
+<div class="mockup-card"><div class="l">Customers</div><div class="v">1,234</div><div class="c">+5.7%</div></div>
+</div>
+<div class="bars">
+<div class="bar" style="height:55%"></div><div class="bar" style="height:62%"></div><div class="bar" style="height:58%"></div><div class="bar" style="height:72%"></div>
+<div class="bar" style="height:78%"></div><div class="bar" style="height:85%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:92%"></div>
+<div class="bar" style="height:88%"></div><div class="bar" style="height:95%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:98%"></div>
+</div>
+</div>
+</div>
+
+<!-- Slide 7: Industries -->
+<div class="slide s7" id="s7">
+<div class="tag tag-blue">🏗️ Industries</div>
+<h2>30+ pre-built templates.</h2>
+<p>Pick your industry. We configure everything — the right modules, workflows, forms, and reports for your business.</p>
+<div class="features" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">🏗️</div><h4 style="font-size:12px">Construction</h4></div>
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">🚛</div><h4 style="font-size:12px">Logistics</h4></div>
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">🏭</div><h4 style="font-size:12px">Manufacturing</h4></div>
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">🏥</div><h4 style="font-size:12px">Healthcare</h4></div>
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">🎓</div><h4 style="font-size:12px">Education</h4></div>
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">⚖️</div><h4 style="font-size:12px">Legal</h4></div>
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">💻</div><h4 style="font-size:12px">IT Services</h4></div>
+<div class="feat" style="text-align:center;padding:12px"><div class="icon" style="margin-bottom:4px">📞</div><h4 style="font-size:12px">Call Centers</h4></div>
+</div>
+</div>
+
+<!-- Slide 8: Pricing -->
+<div class="slide s8" id="s8">
+<div class="tag tag-purple">💰 Pricing</div>
+<h2>Simple. Transparent. Fair.</h2>
+<p>Start free. Upgrade when you're ready. No surprises.</p>
+<div class="features" style="grid-template-columns:repeat(3,1fr);max-width:900px">
+<div class="feat" style="text-align:center"><h4>Starter</h4><div style="font-size:36px;font-weight:900;margin:12px 0">R0</div><p>3 users, 5K contacts, basic CRM</p></div>
+<div class="feat" style="text-align:center;border-color:#3b82f6;background:rgba(59,130,246,.05)"><h4>Professional</h4><div style="font-size:36px;font-weight:900;margin:12px 0;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">R199</div><p>Unlimited users, all modules, AI</p></div>
+<div class="feat" style="text-align:center"><h4>Enterprise</h4><div style="font-size:36px;font-weight:900;margin:12px 0">R499</div><p>White label, SSO, dedicated support</p></div>
+</div>
+</div>
+
+<!-- Slide 9: Testimonials -->
+<div class="slide s9" id="s9">
+<div class="tag tag-green">⭐ Testimonials</div>
+<h2>Teams ship faster with OmniCRM.</h2>
+<div class="features" style="grid-template-columns:repeat(2,1fr)">
+<div class="feat"><p style="color:#e2e8f0;font-style:italic">"We replaced 4 tools. The AI assistant saves us 20 hours a week."</p><h4 style="margin-top:12px">Sarah Chen</h4><p>CEO, TechStart — 3x faster sales</p></div>
+<div class="feat"><p style="color:#e2e8f0;font-style:italic">"Deployed on Monday. Fleet tracking live on Tuesday. Unreal."</p><h4 style="margin-top:12px">Marcus Rivera</h4><p>Ops Director, FastTrack — 40% fewer delays</p></div>
+<div class="feat"><p style="color:#e2e8f0;font-style:italic">"Patient scheduling, billing — everything just works."</p><h4 style="margin-top:12px">Dr. Priya Patel</h4><p>Manager, HealthFirst — 98% satisfaction</p></div>
+<div class="feat"><p style="color:#e2e8f0;font-style:italic">"Handles our entire construction workflow. Game changer."</p><h4 style="margin-top:12px">James O'Brien</h4><p>Founder, BuildRight — 25% under budget</p></div>
+</div>
+</div>
+
+<!-- Slide 10: CTA -->
+<div class="slide s10" id="s10" style="text-align:center;align-items:center">
+<div class="tag tag-blue">🚀 Ready?</div>
+<h1>Your competitors<br>are already <span class="g">using this.</span></h1>
+<p style="margin:0 auto">10,000+ businesses. 50+ industries. One decision to make.</p>
+<div style="display:flex;gap:16px;margin-top:32px;position:relative;z-index:1">
+<a href="https://omnicrm-ai.netlify.app/signup" class="cta-btn">Start Free Now →</a>
+<a href="https://omnicrm-ai.netlify.app/website" class="cta-btn" style="background:rgba(255,255,255,.1);box-shadow:none">⬇ Download App</a>
+</div>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+<button onclick="prev()" id="prevBtn">◀</button>
+<div class="dots" id="dots"></div>
+<button onclick="next()" id="nextBtn">▶</button>
+</div>
+
+<script>
+let current=0;const total=10;let autoPlay=false;let interval;
+function showSlide(n){document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));document.getElementById('s'+(n+1)).classList.add('active');document.getElementById('counter').textContent=(n+1)+' / '+total;updateDots();document.getElementById('prevBtn').disabled=n===0;document.getElementById('nextBtn').disabled=n===total-1}
+function next(){if(current<total-1){current++;showSlide(current)}}
+function prev(){if(current>0){current--;showSlide(current)}}
+function goTo(n){current=n;showSlide(current)}
+function toggleAuto(){autoPlay=!autoPlay;document.getElementById('playBtn').innerHTML=autoPlay?'⏸ Pause':'▶ Auto Play';if(autoPlay){interval=setInterval(()=>{if(current<total-1)next();else{current=0;showSlide(0)}},5000)}else{clearInterval(interval)}}
+function updateDots(){let h='';for(let i=0;i<total;i++){h+='<div class="dot'+(i===current?' active':'')+'" onclick="goTo('+i+')"></div>'}document.getElementById('dots').innerHTML=h}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();if(e.key===' '){e.preventDefault();toggleAuto()}});
+updateDots();showSlide(0);
+</script>
+</body>
+</html>
