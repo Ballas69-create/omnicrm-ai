@@ -26,16 +26,11 @@ const sendMessage = (text?: string) => {
   const msg = text || input; if (!msg.trim()) return;
   setMessages((p) => [...p, { id: Date.now().toString(), role: "user", content: msg, timestamp: new Date() }]);
   setInput(""); setIsTyping(true);
-  setTimeout(() => {
-    let reply = "I have processed your request. Let me analyze the data and get back to you with the results.";
-    if (msg.toLowerCase().includes("lead")) reply = "Lead created successfully! John Smith from Acme Corp has been added to your CRM with a lead score of 85. Sarah Wilson has been notified and a follow-up task has been created.";
-    else if (msg.toLowerCase().includes("quote")) reply = "Quote QT-2024-089 generated for ABC Company. Total: R250,000. Valid for 30 days. Line items include UI/UX Design, Development, Testing, and Project Management. Ready to send?";
-    else if (msg.toLowerCase().includes("report")) reply = "Sales Report - January 2024: Total Revenue R12.4M (+12.5%), New Deals 24, Closed Won 8, Pipeline R42M. Top performer: Sarah Wilson (R850K). 3 deals at risk in negotiation stage.";
-    else if (msg.toLowerCase().includes("invoice")) reply = "Invoice INV-2024-007 created for Acme Corp. Amount: R150,000. Due in 30 days. Services: Consulting and Implementation. Ready to send to john@acme.com?";
-    else if (msg.toLowerCase().includes("pipeline")) reply = "Current Pipeline: Discovery (12 deals, R4.8M), Qualification (8 deals, R3.2M), Proposal (6 deals, R5.4M), Negotiation (4 deals, R6.8M), Won (3 deals, R4.25M). Weighted pipeline: R12.8M.";
-    setMessages((p) => [...p, { id: (Date.now() + 1).toString(), role: "assistant", content: reply, timestamp: new Date() }]);
-    setIsTyping(false);
-  }, 1500);
+  fetch("/api/omni-ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg, history: messages.map(({ role, content }) => ({ role, content })) }) })
+    .then(async (res) => { const data = await res.json(); if (!res.ok) throw new Error(data.error || "AI request failed"); return data; })
+    .then((data) => setMessages((p) => [...p, { id: (Date.now() + 1).toString(), role: "assistant", content: data.content, timestamp: new Date() }]))
+    .catch((error) => setMessages((p) => [...p, { id: (Date.now() + 1).toString(), role: "assistant", content: `OMNI AI error: ${error.message}`, timestamp: new Date() }]))
+    .finally(() => setIsTyping(false));
 };
 
 return (
